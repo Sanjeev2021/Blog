@@ -3,7 +3,8 @@ package routes
 import (
 	"net/http"
 
-	controller "blog/Controller"
+	controller "blog/controller"
+	"blog/login/controller"
 )
 
 func Routes() {
@@ -16,5 +17,7 @@ func Routes() {
 	http.HandleFunc("/update-username", controller.UpdateUsernameHandler)
 	http.HandleFunc("/delete-user", controller.DeleteUser)
 	http.HandleFunc("/get-users", controller.GetUser)
+
+	http.HandleFunc("/login", Login.LoginHandler)
 
 }

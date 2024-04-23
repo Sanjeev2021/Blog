@@ -11,15 +11,24 @@ import (
 
 var allBlogs []*model.Blog
 
-func NewBlog(id uint, authorid uint, title string, content string) (*model.Blog, error) {
+func NewBlog(id uint, userID uint, title string, content string) (*model.Blog, error) {
+
+	user, err := GetUserById(userID)
+	if err != nil {
+		return nil, errors.New("cant find user")
+	}
+
+	if user == nil {
+		return nil, errors.New("user does not exist")
+	}
 
 	if id <= 0 {
 		return nil, errors.New("The id cant be less than 0 or equal to 0.")
 	}
 
-	if authorid <= 0 {
-		return nil, errors.New("The author id cant be less than 0 or equal to 0.")
-	}
+	// if authorid <= 0 {
+	// 	return nil, errors.New("The author id cant be less than 0 or equal to 0.")
+	// }
 
 	if title == "" {
 		return nil, errors.New("The title cant be empty.")
@@ -34,7 +43,7 @@ func NewBlog(id uint, authorid uint, title string, content string) (*model.Blog,
 
 	var tempblog = &model.Blog{
 		ID:        id,
-		AuthorID:  authorid,
+		UserID:    userID,
 		CreatedAt: createdAt,
 		UpdatedAt: updatedAt,
 		Title:     title,
@@ -53,6 +62,7 @@ func NewBlog(id uint, authorid uint, title string, content string) (*model.Blog,
 }
 
 func UpdateBlogTitle(b *model.Blog, title string) error {
+
 	if b.Title == "" {
 		return errors.New("the title cant be empty.")
 	}
@@ -77,5 +87,23 @@ func DeleteBlog(b *model.Blog) error {
 }
 
 func GetBlogs() ([]*model.Blog, error) {
-	return allBlogs, nil
+	var blogs []*model.Blog
+
+	db := database.Get_GormDB()
+	if err := db.Find(&blogs).Error; err != nil {
+		return nil, errors.New("No blog found.")
+	}
+
+	return blogs, nil
+}
+
+func GetBlogbyId(blogID uint) ([]*model.Blog, error) {
+	var blog []*model.Blog
+
+	db := database.Get_GormDB()
+	if err := db.Find(&blog, blogID).Error; err != nil {
+		return nil, errors.New("Blog not found.")
+	}
+
+	return blog, nil
 }

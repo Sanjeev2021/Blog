@@ -34,6 +34,7 @@ func Create_DB() {
 	if err != nil {
 		log.Fatal("Error migrating database:", err)
 	}
+
 }
 
 func Get_GormDB() *gorm.DB {

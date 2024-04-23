@@ -7,7 +7,6 @@ import (
 
 	"blog/database"
 	"blog/model"
-
 )
 
 var allUsers []*model.User
@@ -30,7 +29,7 @@ func NewUser(id uint, name string, email string, password string) (*model.User, 
 	}
 
 	createdAt := time.Now().Truncate(24 * time.Hour)
-	updatedAt := time.Now().Truncate(24 * time.Hour)
+	updatedAt := createdAt
 
 	var tempUser = &model.User{
 		ID:        id,
@@ -62,6 +61,13 @@ func UpdateUsername(u *model.User, name string) error {
 	}
 
 	u.Name = name
+
+	db := database.Get_GormDB()
+
+	if err := db.Save(u).Error; err != nil {
+		return errors.New("there is some error in update" + err.Error())
+	}
+
 	return nil
 }
 
@@ -71,9 +77,34 @@ func DeleteUser(u *model.User) error {
 	}
 
 	u.Name = ""
+	db := database.Get_GormDB()
+
+	if err := db.Delete(u).Error; err != nil {
+		return errors.New("there is some error in delete" + err.Error())
+	}
+
 	return nil
 }
 
 func GetUser() ([]*model.User, error) {
-	return allUsers, nil
+
+	var users []*model.User
+
+	db := database.Get_GormDB()
+	if err := db.Find(&users).Error; err != nil {
+		return nil, errors.New("cant find the user")
+	}
+
+	return users, nil
+}
+
+func GetUserById(userID uint) ([]*model.User, error) {
+	var user []*model.User
+
+	db := database.Get_GormDB()
+	if err := db.Find(&user, userID).Error; err != nil {
+		return nil, errors.New("cant find user")
+	}
+
+	return user, nil
 }

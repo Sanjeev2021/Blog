@@ -18,7 +18,7 @@ func CreateBlogHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	//sevice call for blog
-	blog, err := service.NewBlog(newBlog.ID, newBlog.AuthorID, newBlog.Title, newBlog.Content)
+	blog, err := service.NewBlog(newBlog.ID, newBlog.UserID, newBlog.Title, newBlog.Content)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return

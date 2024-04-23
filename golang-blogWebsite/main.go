@@ -9,6 +9,7 @@ import (
 
 	"blog/database"
 	"blog/routes"
+
 )
 
 // var SqlDB *gorm.DB
@@ -22,6 +23,8 @@ func main() {
 	database.Create_DB()
 
 	log.Println("Database schema migrated successfully")
+
+
 
 	fmt.Println("Server listening on port 8080")
 	err := http.ListenAndServe(":8080", nil)
